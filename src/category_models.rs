@@ -72,4 +72,6 @@ impl UpdateCategory {
         pub id:i32,
         pub title: String,
         pub details: String,
+        pub created_at: String,
+        pub update_at: String
     } 

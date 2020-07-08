@@ -145,7 +145,7 @@ pub fn permanent_delete_product(id:String) -> JsonValue {
 pub fn not_found() -> JsonValue {
     json!({
         "status": "error",
-        "message": "404 error nothing found."
+        "message": "Nothing found."
     })
 }
 #[catch(500)]

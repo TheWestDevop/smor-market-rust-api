@@ -16,6 +16,9 @@ mod product_route;
 mod category_models;
 mod category_handler;
 mod category_routes;
+mod order_models;
+mod order_handler;
+mod order_routes;
 
 fn main() {
 
@@ -29,7 +32,8 @@ fn main() {
         product_route::search_product,
         product_route::search_product_by_category,
         product_route::products_by_category,
-        category_routes::avaliable_category
+        category_routes::avaliable_category,
+        order_routes::make_order
         ])
     .mount("/admin", routes![
         product_route::index,
@@ -40,7 +44,9 @@ fn main() {
         product_route::permanent_delete_product,
         category_routes::add_new_category,
         category_routes::update_category,
-        category_routes::delete_category
+        category_routes::delete_category,
+        order_routes::update_status,
+        order_routes::all_orders
         ])
     .register(
         catchers![
