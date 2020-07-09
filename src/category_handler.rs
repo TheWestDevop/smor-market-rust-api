@@ -3,7 +3,7 @@
 use diesel::prelude::*;
 use diesel::PgConnection;
 use rocket_contrib::json::{JsonValue};
-use crate::category_models::{Category,NewCategory,UpdateCategory};
+use crate::models::{Category,NewCategory,UpdateCategory};
 use crate::schema;
 
 pub fn add_category(con:PgConnection,category:NewCategory)-> JsonValue {

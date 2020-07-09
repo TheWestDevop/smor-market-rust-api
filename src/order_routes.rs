@@ -4,13 +4,18 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::order_handler;
-use crate::order_models::{NewOrder,UpdateOrder,OrderData,OrderUpdate};
+use crate::models::{ NewOrder,UpdateOrder,OrderData,OrderUpdate,ApiKey};
 
 
 #[get("/all/orders")]
-pub fn all_orders() -> JsonValue {
+pub fn all_orders(_auth:ApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return order_handler::get_all_orders(connect);
+}
+#[get("/all/<id>/orders")]
+pub fn all_user_orders(id:String) -> JsonValue {
+    let connect = product_handler::establish_connection();
+    return order_handler::get_all_user_orders(connect,id);
 }
 
 #[post("/make/order", data = "<order>")]
@@ -35,9 +40,8 @@ pub fn make_order(order:Form<OrderData>) -> JsonValue {
     return order_handler::add_to_order(connect,order);
 }
 
-
 #[put("/update/order/status", data = "<order>")]
-pub fn update_status(order:Form<OrderUpdate>) -> JsonValue {
+pub fn update_status(order:Form<OrderUpdate>,_auth:ApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     let time  = Local::now();
     

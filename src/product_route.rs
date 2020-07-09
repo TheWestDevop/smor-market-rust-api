@@ -1,9 +1,11 @@
 use rocket_contrib::json::{JsonValue};
-use rocket::request::Form;
+use rocket::request::{Form};
 use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
-use crate::product_models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
+use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm,ApiKey,generate_token};
+
+
 #[get("/")]
 pub fn index() -> JsonValue {
     return json!({
@@ -25,10 +27,20 @@ pub fn unavaliable_products() -> JsonValue {
 }
 
 #[get("/all/temp/delete/products")]
-pub fn all_temp_delete_products() -> JsonValue {
-    let connect = product_handler::establish_connection();
-    return product_handler::get_all_temp_delete_products(connect);
+pub fn all_temp_delete_products(_auth:ApiKey) -> JsonValue {
+    
+     let connect = product_handler::establish_connection();
+
+     return product_handler::get_all_temp_delete_products(connect)
+   
 }
+
+#[get("/generate-token")]
+pub fn generate_auth_token() -> JsonValue {
+    return generate_token();
+}
+
+ 
 
 #[get("/product/category/<id>")]
 pub fn products_by_category(id:String) -> JsonValue {
@@ -52,7 +64,7 @@ pub fn search_product_by_category(category:String,product:String) -> JsonValue {
 
 
 #[post("/add/product", data = "<item>")]
-pub fn add_new_product(item:Form<FormProduct>) -> JsonValue {
+pub fn add_new_product(item:Form<FormProduct>,_auth:ApiKey) -> JsonValue {
 
     let time  = Local::now();
     let p_id = Uuid::new_v5(
@@ -84,7 +96,7 @@ pub fn add_new_product(item:Form<FormProduct>) -> JsonValue {
 }
 
 #[put("/update/product", data = "<item>")]
-pub fn update_product(item:Form<UpdateForm>) -> JsonValue {
+pub fn update_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -110,7 +122,7 @@ pub fn update_product(item:Form<UpdateForm>) -> JsonValue {
 }
 
 #[patch("/temp/product/delete/state", data = "<item>")]
-pub fn temp_delete_product(item:Form<UpdateForm>) -> JsonValue {
+pub fn temp_delete_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -134,7 +146,7 @@ pub fn temp_delete_product(item:Form<UpdateForm>) -> JsonValue {
 }
 
 #[delete("/delete/product/<id>")]
-pub fn permanent_delete_product(id:String) -> JsonValue {
+pub fn permanent_delete_product(id:String,_auth:ApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::delete_product(connect,id);
 }
@@ -146,6 +158,13 @@ pub fn not_found() -> JsonValue {
     json!({
         "status": "error",
         "message": "Nothing found."
+    })
+}
+#[catch(401)]
+pub fn not_authorised() -> JsonValue {
+    json!({
+        "status": "error",
+        "message": "The request requires admin authentication."
     })
 }
 #[catch(500)]

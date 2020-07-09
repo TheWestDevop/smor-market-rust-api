@@ -4,7 +4,7 @@ use std::env;
 use diesel::prelude::*;
 use diesel::PgConnection;
 use rocket_contrib::json::{JsonValue};
-use crate::product_models::{Product,NewProduct,UpdateProduct};
+use crate::models::{Product,NewProduct,UpdateProduct};
 use crate::schema;
 
 pub fn establish_connection() -> PgConnection {

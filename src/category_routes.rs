@@ -3,7 +3,7 @@ use rocket::request::Form;
 use chrono::prelude::*;
 use crate::product_handler;
 use crate::category_handler;
-use crate::category_models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate};
+use crate::models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate,ApiKey};
 
 
 #[get("/categories")]
@@ -13,7 +13,7 @@ pub fn avaliable_category() -> JsonValue {
 }
 
 #[post("/add/category", data = "<item>")]
-pub fn add_new_category(item:Form<CategoryData>) -> JsonValue {
+pub fn add_new_category(item:Form<CategoryData>,_auth:ApiKey) -> JsonValue {
     let time  = Local::now();
     let new_category =  NewCategory::new(
         item.title.to_string(), 
@@ -29,7 +29,7 @@ pub fn add_new_category(item:Form<CategoryData>) -> JsonValue {
 }
 
 #[put("/update/category", data = "<item>")]
-pub fn update_category(item:Form<CategoryUpdate>) -> JsonValue {
+pub fn update_category(item:Form<CategoryUpdate>,_auth:ApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -46,7 +46,7 @@ pub fn update_category(item:Form<CategoryUpdate>) -> JsonValue {
 }
 
 #[delete("/delete/category/<id>")]
-pub fn delete_category(id:i32) -> JsonValue {
+pub fn delete_category(id:i32,_auth:ApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return category_handler::delete_category(connect,id);
 }

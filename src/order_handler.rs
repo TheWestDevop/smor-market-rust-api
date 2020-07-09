@@ -1,7 +1,7 @@
 use diesel::prelude::*;
 use diesel::PgConnection;
 use rocket_contrib::json::{JsonValue};
-use crate::order_models::{Order,NewOrder,UpdateOrder};
+use crate::models::{Order,NewOrder,UpdateOrder};
 use crate::schema;
 
 
@@ -43,4 +43,17 @@ pub fn get_all_orders(con:PgConnection) -> JsonValue {
         "status": "success",
         "data":results
     })
+}
+
+pub fn get_all_user_orders(con:PgConnection,uid:String) -> JsonValue{
+    use schema::market_products_orders::dsl::*;
+    let results = market_products_orders.filter(user_id.eq(uid))
+    .load::<Order>(&con)
+    .expect("Error loading user orders");
+    // print!("query result  {:?}",results);
+    return json!({
+        "status": "success",
+        "data":results
+    })
+
 }
