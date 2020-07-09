@@ -14,7 +14,7 @@ pub fn add_category(con:PgConnection,category:NewCategory)-> JsonValue {
                                                 .execute(&con)
                                                 .expect("Error creating new category");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":"Category added successfully"
             })
 
@@ -32,7 +32,7 @@ pub fn update_old_category(con:PgConnection,category:UpdateCategory) -> JsonValu
                                                 .get_results::<Category>(&con)
                                                 .expect("Error updating category");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":results
             })
 }
@@ -43,7 +43,7 @@ pub fn get_avaliable_category(con:PgConnection) -> JsonValue {
     .expect("Error loading avaliable category");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
 }
@@ -55,7 +55,7 @@ pub fn delete_category(con:PgConnection,cid:i32) -> JsonValue {
      .execute(&con)
         .expect("Error deleting category");
     return json!({
-            "status": "success",
+            "status": true,
             "data":"Category deleted successfully"
         })
 }

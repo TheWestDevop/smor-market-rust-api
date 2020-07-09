@@ -12,7 +12,7 @@ pub fn add_to_order(con:PgConnection,order:NewOrder) -> JsonValue {
                                                 .execute(&con)
                                                 .expect("Error submitting new order");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":"Order Submitted successfuly."
             })
 }
@@ -28,7 +28,7 @@ pub fn update_order_status(con:PgConnection,order:UpdateOrder) -> JsonValue {
                                                 .execute(&con)
                                                 .expect("Error updating product");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":"order status update successfully."
             })
 }
@@ -40,7 +40,7 @@ pub fn get_all_orders(con:PgConnection) -> JsonValue {
     .expect("Error loading orders");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
 }
@@ -52,7 +52,7 @@ pub fn get_all_user_orders(con:PgConnection,uid:String) -> JsonValue{
     .expect("Error loading user orders");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
 

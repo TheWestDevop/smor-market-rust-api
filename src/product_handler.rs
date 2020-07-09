@@ -22,7 +22,7 @@ pub fn add_product(con:PgConnection,product:NewProduct)-> JsonValue {
                                                 .get_result::<Product>(&con)
                                                 .expect("Error creating new product");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":results
             })
 
@@ -46,7 +46,7 @@ pub fn update_old_product(con:PgConnection,product:UpdateProduct) -> JsonValue {
                                                 .get_result::<Product>(&con)
                                                 .expect("Error updating product");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":results
             })
 }
@@ -61,7 +61,7 @@ pub fn temp_delete_and_undelete_product(con:PgConnection,product:UpdateProduct) 
                                                 .execute(&con)
                                                 .expect("Error updating product delete state");
     return json!({
-                "status": "success",
+                "status": true,
                 "data":"Product state changed succesfully"
             })
 }
@@ -72,7 +72,7 @@ pub fn delete_product(con:PgConnection,pid:String) -> JsonValue {
     .execute(&con)
         .expect("Error deleting category");
     return json!({
-            "status": "success",
+            "status": true,
             "data":"Product deleted successfully"
         })
 }
@@ -84,7 +84,7 @@ pub fn get_avaliable_products(con:PgConnection) -> JsonValue {
     .expect("Error loading avaliable products");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }
@@ -96,7 +96,7 @@ pub fn get_unavaliable_products(con:PgConnection)-> JsonValue{
     .expect("Error loading unavaliable products");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }
@@ -108,7 +108,7 @@ pub fn product_by_category(con:PgConnection,cate_id:String) -> JsonValue {
     .expect("Error loading products by category");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }
@@ -120,7 +120,7 @@ pub fn get_product(con:PgConnection,query:String) -> JsonValue {
     .expect("Error loading searched products");
     print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }
@@ -132,7 +132,7 @@ pub fn get_product_by_category(con:PgConnection,cate_id:String, query:String) ->
     .expect("Error loading searched products");
     print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }
@@ -144,7 +144,7 @@ pub fn get_all_temp_delete_products(con:PgConnection) -> JsonValue {
     .expect("Error loading avaliable products");
     // print!("query result  {:?}",results);
     return json!({
-        "status": "success",
+        "status": true,
         "data":results
     })
  }

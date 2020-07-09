@@ -156,35 +156,35 @@ pub fn permanent_delete_product(id:String,_auth:ApiKey) -> JsonValue {
 #[catch(404)]
 pub fn not_found() -> JsonValue {
     json!({
-        "status": "error",
+        "status": false,
         "message": "Nothing found."
     })
 }
 #[catch(401)]
 pub fn not_authorised() -> JsonValue {
     json!({
-        "status": "error",
-        "message": "The request requires admin authentication."
+        "status": false,
+        "message": "The request requires authentication."
     })
 }
 #[catch(500)]
 pub fn server_error() -> JsonValue {
     json!({
-        "status": "error",
+        "status": false,
         "message": "Whoops! Looks like we messed up."
     })
 }
 #[catch(400)]
 pub fn bad_request() -> JsonValue {
     json!({
-        "status": "error",
+        "status": false,
         "message": "Whoops! Looks like you send a bad request."
     })
 }
 #[catch(422)]
 pub fn unprocessable_entity() -> JsonValue {
     json!({
-        "status": "error",
+        "status": false,
         "message": "Whoops! Looks like you send a bad request."
     })
 }
