@@ -19,7 +19,11 @@ pub fn verify_token(token:&str) -> Result<String,Error>{
     let token_claims: BTreeMap<String, String> = token.verify_with_key(&key)?;
     // Err(Error::NoClaimsComponent);
     // println!("token sub is {} and company is {}",token_claims["sub"].to_string(),token_claims["company"].to_string() );
-    Ok(token_claims["sub"].to_string())
+    if token_claims["company"].eq("smor_group") {
+        Ok(token_claims["sub"].to_string())
+    }else{
+       Err(Error::NoClaimsComponent,)
+    }
 }
 
 pub fn generate_token(username:&str,iat:&str) -> JsonValue {
@@ -51,7 +55,7 @@ fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()>{
     let keys: Vec<_> = request.headers().get("authorization").collect();
 
 
-    // print!("request header ---> {:?}",keys);
+    // print!("request header ---> {:#?}",request);
 
     // let nkey = ;
    
