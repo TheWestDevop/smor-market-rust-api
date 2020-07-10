@@ -2,14 +2,9 @@ use crate::schema::*;
 
 use serde::{Serialize, Deserialize};
 //  use jsonwebtoken::{ decode, Validation,DecodingKey,Algorithm};
-use rocket::{Outcome, request::{self,Request,FromRequest}, http::Status};
 // use jwt
-use hmac::{Hmac, NewMac};
-use jwt::*;
-use sha2::Sha256;
-use std::collections::BTreeMap;
-use rocket_contrib::json::{JsonValue};
-
+// use rocket_contrib::json::{JsonValue};
+// use serde_json::value::Value;
 /// Our claims struct, it needs to derive `Serialize` and/or `Deserialize`
 
 
@@ -26,7 +21,8 @@ pub struct Product {
     pub store_location: String,
     pub temp_delete:bool,
     pub created_at: String,
-    pub update_at: String
+    pub update_at: String,
+    pub product_images: String,
 }
 
 #[derive(Insertable,Debug)]
@@ -42,16 +38,24 @@ pub struct NewProduct {
     pub store_location: String,
     pub temp_delete:bool,
     pub created_at: String,
-    pub update_at: String
+    pub update_at: String,
+    pub product_images: String,
+
 } 
 impl NewProduct {
    pub fn new(
-    product_id: String, category_id: String,
-    title: String, published: bool, 
-    price: String, avaliable_status: String,
-    store_quantity: String, store_location: String,
-    temp_delete: bool, created_at: String,
+    product_id: String, 
+    category_id: String,
+    title: String,
+    published: bool, 
+    price: String, 
+    avaliable_status: String,
+    store_quantity: String, 
+    store_location: String,
+    temp_delete: bool, 
+    created_at: String,
     update_at: String,
+    product_images: String,
     ) -> NewProduct {
         NewProduct {
              product_id,
@@ -64,7 +68,8 @@ impl NewProduct {
              store_location,
              temp_delete,
              created_at,
-             update_at
+             update_at,
+             product_images,
         } 
     }
 }
@@ -81,13 +86,14 @@ pub struct UpdateProduct {
     pub store_quantity: String,
     pub store_location: String,
     pub temp_delete:bool,
-    pub update_at: String
+    pub update_at: String,
+    pub product_images: String,
 } 
 impl UpdateProduct {
    pub fn new(
     id:i32,
     category_id: String,
-    title: String, 
+    title: String,
     published: bool, 
     price: String, 
     avaliable_status: String,
@@ -95,7 +101,7 @@ impl UpdateProduct {
     store_location: String,
     temp_delete: bool,
     update_at: String,
-
+    product_images: String, 
     ) -> UpdateProduct {
         UpdateProduct {
              id,
@@ -107,7 +113,9 @@ impl UpdateProduct {
              store_quantity,
              store_location,
              temp_delete,
-             update_at
+             update_at,
+             product_images,
+
         } 
     }
 }
@@ -119,6 +127,7 @@ impl UpdateProduct {
     pub struct FormProduct {
         pub category_id:String,
         pub title: String,
+        pub product_images: String,
         pub price: String,
         pub avaliable_status: String,
         pub store_quantity: String,
@@ -131,6 +140,7 @@ impl UpdateProduct {
         pub product_id:String,
         pub category_id:String,
         pub title: String,
+        pub product_images: String,
         pub published: bool,
         pub price: String,
         pub avaliable_status: String,
@@ -339,62 +349,4 @@ impl UpdateOrder {
             pub update_at: String
         } 
 
-    pub fn verify_token(token:&str) -> Result<String,String>{
-        let key: Hmac<Sha256> = Hmac::new_varkey(b"mysecret").unwrap();
-        let token_claims: BTreeMap<String, String> = token.verify_with_key(&key).unwrap();
-        // match claims {
-        //  Ok(claims) => claims['']
-        // }
-        // print!("key length --> {:?}",token_claims.len());
-
-       if token_claims.is_empty() {
-        return Err("Token not valid".to_string());
-       }else{
-        return Ok(token_claims["sub"].to_string());
-       }
-    }
-   pub fn generate_token() -> JsonValue {
-    let key: Hmac<Sha256> = Hmac::new_varkey(b"mysecret").unwrap();
-    let mut claims = BTreeMap::new();
-    claims.insert("sub", "smor_admin");
-    claims.insert("company", "smor_group");
-    claims.insert("exp", "smor_admin");
-
-
-    let token = claims.sign_with_key(&key).unwrap();
-    if token.is_empty() {
-        return json!({
-            "status":"error",
-            "message":"an error occurred kindly try again"
-        });
-       }else{
-        return json!({
-            "status":"success",
-            "token":token
-        });
-    }
-   }
-#[derive(Debug)]
-pub struct  ApiKey (pub String);
-
-impl<'a, 'r> FromRequest<'a, 'r> for ApiKey {
-    type Error = ();
-    
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()>{
-      
-        let keys: Vec<_> = request.headers().get("authorization").collect();
-
-
-        // print!("request header ---> {:?}",keys);
-        
-         if keys.is_empty() || keys.len() != 1  || keys[0] == ""{ 
-           return  Outcome::Failure((Status::Unauthorized,()));
-         }
-         match verify_token(keys[0]) {
-            Ok(claim) => Outcome::Success(ApiKey(claim)),
-            
-            Err(_) => Outcome::Forward(())
-        }
-        // return  keys;
-    }
-}
+   

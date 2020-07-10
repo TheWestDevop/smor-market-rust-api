@@ -12,6 +12,7 @@ table! {
         temp_delete -> Bool,
         created_at -> Varchar,
         update_at -> Varchar,
+        product_images -> Text,
     }
 }
 

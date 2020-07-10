@@ -3,7 +3,8 @@ use rocket::request::{Form};
 use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
-use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm,ApiKey,generate_token};
+use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
+use crate::auth::{ApiKey,generate_token,verify_token};
 
 
 #[get("/")]
@@ -37,9 +38,25 @@ pub fn all_temp_delete_products(_auth:ApiKey) -> JsonValue {
 
 #[get("/generate-token")]
 pub fn generate_auth_token() -> JsonValue {
-    return generate_token();
+    let time  = Local::now();
+    return generate_token("oyeniyi adedayo",&time.to_string());
 }
 
+#[post("/verify-token",data="<key>")]
+pub fn verify_auth_token(key:String) -> JsonValue {
+//  println!("token verify response ----> {:#?}",);
+    match verify_token(&key) {
+        Ok(claim) => json!({
+            "status":true,
+            "response":claim
+         }),
+        Err(_) => json!({
+            "status":true,
+            "response":"invalid token sent"
+         })
+    }
+
+}
  
 
 #[get("/product/category/<id>")]
@@ -62,6 +79,11 @@ pub fn search_product_by_category(category:String,product:String) -> JsonValue {
     return product_handler::get_product_by_category(connect,category,product);
 }
 
+#[get("/product/<id>")]
+pub fn get_product(id:String) -> JsonValue {
+    let connect = product_handler::establish_connection();
+    return product_handler::get_single_product(connect,id);
+}
 
 #[post("/add/product", data = "<item>")]
 pub fn add_new_product(item:Form<FormProduct>,_auth:ApiKey) -> JsonValue {
@@ -83,7 +105,8 @@ pub fn add_new_product(item:Form<FormProduct>,_auth:ApiKey) -> JsonValue {
         item.store_location.to_string(), 
         false, 
         time.to_string(), 
-        time.to_string()
+        time.to_string(),
+        item.product_images.to_string(),
     );
 
     // print!("New Product is {:?}",new_product);
@@ -103,14 +126,16 @@ pub fn update_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
     let update_product =  UpdateProduct::new(
         item.id,
         item.category_id.to_string(), 
-        item.title.to_string(), 
+        item.title.to_string(),
         item.published, 
         item.price.to_string(), 
         item.avaliable_status.to_string(), 
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
         item.temp_delete, 
-        time.to_string()
+        time.to_string(),
+        item.product_images.to_string(), 
+
     );
 
     // print!("New Product is {:?}",new_product);
@@ -136,7 +161,9 @@ pub fn temp_delete_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
         item.temp_delete, 
-        time.to_string()
+        time.to_string(),
+        item.product_images.to_string(), 
+
     );
 
     let connect = product_handler::establish_connection();
@@ -165,6 +192,13 @@ pub fn not_authorised() -> JsonValue {
     json!({
         "status": false,
         "message": "The request requires authentication."
+    })
+}
+#[catch(203)]
+pub fn not_authoritative() -> JsonValue {
+    json!({
+        "status": false,
+        "message": "non-authoritative token given."
     })
 }
 #[catch(500)]

@@ -34,6 +34,7 @@ pub fn update_old_product(con:PgConnection,product:UpdateProduct) -> JsonValue {
     let results = diesel::update(&product)
                                                 .set((
                                                     title.eq(&product.title),
+                                                    product_images.eq(&product.product_images),
                                                     category_id.eq(&product.category_id),
                                                     published.eq(&product.published),
                                                     price.eq(&product.price),
@@ -125,6 +126,17 @@ pub fn get_product(con:PgConnection,query:String) -> JsonValue {
     })
  }
 
+pub fn get_single_product(con:PgConnection,pid:String) -> JsonValue {
+    use schema::market_products::dsl::*;
+    let results = market_products.filter(product_id.eq(pid).and(temp_delete.eq(false)))
+    .load::<Product>(&con)
+    .expect("Error loading  product");
+    // print!("query result  {:?}",results);
+    return json!({
+        "status": true,
+        "data":results
+    })
+ }
 pub fn get_product_by_category(con:PgConnection,cate_id:String, query:String) -> JsonValue {
     use schema::market_products::dsl::*;
     let results = market_products.filter(category_id.eq(cate_id).and(title.ilike(query)).and(temp_delete.eq(false)))

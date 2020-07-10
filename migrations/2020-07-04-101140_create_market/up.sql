@@ -9,6 +9,7 @@ CREATE TABLE market_products (
   avaliable_status VARCHAR(255) NOT NULL,
   store_quantity VARCHAR(255) NOT NULL,
   store_location VARCHAR(255) NOT NULL,
+  product_image TEXT NOT NULL,
   temp_delete BOOLEAN NOT NULL DEFAULT FALSE,
   created_at VARCHAR(255) NOT NULL,
   update_at VARCHAR(255) NOT NULL

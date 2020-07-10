@@ -3,7 +3,8 @@ use rocket::request::Form;
 use chrono::prelude::*;
 use crate::product_handler;
 use crate::category_handler;
-use crate::models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate,ApiKey};
+use crate::models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate};
+use crate::auth::ApiKey;
 
 
 #[get("/categories")]

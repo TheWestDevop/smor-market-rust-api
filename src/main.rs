@@ -5,12 +5,13 @@
 #[macro_use] extern crate diesel;
 extern crate dotenv;
 extern crate serde;
-extern crate serde_json;
 extern crate uuid;
 extern crate chrono;
-extern crate hmac;
 extern crate jwt;
+extern crate hmac;
 extern crate sha2;
+
+
 
 
 
@@ -24,7 +25,7 @@ mod category_routes;
 mod order_handler;
 mod order_routes;
 mod models;
-
+mod auth;
 fn main() {
 
     product_handler::establish_connection();
@@ -37,6 +38,7 @@ fn main() {
         product_route::search_product,
         product_route::search_product_by_category,
         product_route::products_by_category,
+        product_route::get_product,
         category_routes::avaliable_category,
         order_routes::make_order,
         order_routes::all_user_orders,
@@ -48,6 +50,7 @@ fn main() {
         product_route::temp_delete_product,
         product_route::all_temp_delete_products,
         product_route::generate_auth_token,
+        product_route::verify_auth_token,
         product_route::permanent_delete_product,
         category_routes::add_new_category,
         category_routes::update_category,
@@ -62,7 +65,8 @@ fn main() {
             product_route::server_error,
             product_route::bad_request,
             product_route::unprocessable_entity,
-            product_route::not_authorised
+            product_route::not_authorised,
+            product_route::not_authoritative
         ]
     )
     .launch();

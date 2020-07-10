@@ -4,7 +4,8 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::order_handler;
-use crate::models::{ NewOrder,UpdateOrder,OrderData,OrderUpdate,ApiKey};
+use crate::models::{ NewOrder,UpdateOrder,OrderData,OrderUpdate};
+use crate::auth::ApiKey;
 
 
 #[get("/all/orders")]
