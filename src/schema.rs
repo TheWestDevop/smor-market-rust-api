@@ -52,9 +52,10 @@ table! {
     }
 }
 
+
 allow_tables_to_appear_in_same_query!(
     market_products,
     market_products_categories,
     market_products_coupons,
-    market_products_orders,
+    market_products_orders
 );

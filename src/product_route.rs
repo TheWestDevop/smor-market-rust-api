@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
-use crate::auth::{ApiKey,generate_token,verify_token};
+use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
 
 
 #[get("/")]
@@ -28,7 +28,7 @@ pub fn unavaliable_products() -> JsonValue {
 }
 
 #[get("/all/temp/delete/products")]
-pub fn all_temp_delete_products(_auth:ApiKey) -> JsonValue {
+pub fn all_temp_delete_products(_auth:NormalAdminApiKey) -> JsonValue {
     
      let connect = product_handler::establish_connection();
 
@@ -36,27 +36,6 @@ pub fn all_temp_delete_products(_auth:ApiKey) -> JsonValue {
    
 }
 
-#[get("/generate-token")]
-pub fn generate_auth_token() -> JsonValue {
-    let time  = Local::now();
-    return generate_token("oyeniyi adedayo",&time.to_string());
-}
-
-#[post("/verify-token",data="<key>")]
-pub fn verify_auth_token(key:String) -> JsonValue {
-//  println!("token verify response ----> {:#?}",);
-    match verify_token(&key) {
-        Ok(claim) => json!({
-            "status":true,
-            "response":claim
-         }),
-        Err(_) => json!({
-            "status":true,
-            "response":"invalid token sent"
-         })
-    }
-
-}
  
 
 #[get("/product/category/<id>")]
@@ -86,7 +65,7 @@ pub fn get_product(id:String) -> JsonValue {
 }
 
 #[post("/add/product", data = "<item>")]
-pub fn add_new_product(item:Form<FormProduct>,_auth:ApiKey) -> JsonValue {
+pub fn add_new_product(item:Form<FormProduct>,_auth:NormalAdminApiKey) -> JsonValue {
 
     let time  = Local::now();
     let p_id = Uuid::new_v5(
@@ -119,7 +98,7 @@ pub fn add_new_product(item:Form<FormProduct>,_auth:ApiKey) -> JsonValue {
 }
 
 #[put("/update/product", data = "<item>")]
-pub fn update_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
+pub fn update_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -147,7 +126,7 @@ pub fn update_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
 }
 
 #[patch("/temp/product/delete/state", data = "<item>")]
-pub fn temp_delete_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
+pub fn temp_delete_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -173,7 +152,7 @@ pub fn temp_delete_product(item:Form<UpdateForm>,_auth:ApiKey) -> JsonValue {
 }
 
 #[delete("/delete/product/<id>")]
-pub fn permanent_delete_product(id:String,_auth:ApiKey) -> JsonValue {
+pub fn permanent_delete_product(id:String,_auth:SuperAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::delete_product(connect,id);
 }

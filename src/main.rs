@@ -49,8 +49,6 @@ fn main() {
         product_route::update_product,
         product_route::temp_delete_product,
         product_route::all_temp_delete_products,
-        product_route::generate_auth_token,
-        product_route::verify_auth_token,
         product_route::permanent_delete_product,
         category_routes::add_new_category,
         category_routes::update_category,

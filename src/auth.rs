@@ -10,47 +10,28 @@ use rocket_contrib::json::{JsonValue};
 
 
 
-#[derive(Debug)]
-pub struct  ApiKey (pub String);
+pub struct  SuperAdminApiKey (pub BTreeMap<String, String>);
+pub struct  NormalAdminApiKey (pub BTreeMap<String, String>);
+pub struct  UserApiKey (pub BTreeMap<String, String>);
 
-pub fn verify_token(token:&str) -> Result<String,Error>{
+
+pub fn verify_token(token:&str) -> Result<BTreeMap<String, String>,Error>{
     // type Error  = !;
     let key: Hmac<Sha256> = Hmac::new_varkey(b"mysecret").unwrap();
     let token_claims: BTreeMap<String, String> = token.verify_with_key(&key)?;
     // Err(Error::NoClaimsComponent);
     // println!("token sub is {} and company is {}",token_claims["sub"].to_string(),token_claims["company"].to_string() );
     if token_claims["company"].eq("smor_group") {
-        Ok(token_claims["sub"].to_string())
+        Ok(token_claims)
     }else{
        Err(Error::NoClaimsComponent,)
     }
 }
 
-pub fn generate_token(username:&str,iat:&str) -> JsonValue {
-    let key: Hmac<Sha256> = Hmac::new_varkey(b"mysecret").unwrap();
-    let mut claims = BTreeMap::new();
-    claims.insert("sub", username);
-    claims.insert("iat",iat);
-    claims.insert("company", "smor_group");
-
-    let token = claims.sign_with_key(&key).unwrap();
-    if token.is_empty() {
-        return json!({
-            "status":"error",
-            "message":"an error occurred kindly try again"
-        });
-       }else{
-        return json!({
-            "status":"success",
-            "token":token
-        });
-    }
-}
-
-impl<'a, 'r> FromRequest<'a, 'r> for ApiKey {
+impl<'a, 'r> FromRequest<'a, 'r> for SuperAdminApiKey {
 type Error = ();
 
-fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()>{
+fn from_request(request: &'a Request<'r>) -> request::Outcome<SuperAdminApiKey, ()>{
   
     let keys: Vec<_> = request.headers().get("authorization").collect();
 
@@ -63,7 +44,15 @@ fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()>{
        return  Outcome::Failure((Status::Unauthorized,()));
      }else {
      match verify_token(keys[0]) {
-        Ok(claim) => Outcome::Success(ApiKey(claim)),
+        Ok(claim) => {
+            match claim["role"].as_str() {
+             "1" => Outcome::Failure((Status::Forbidden,())),
+             "2" => Outcome::Failure((Status::NonAuthoritativeInformation,())),
+             "3" => Outcome::Success(SuperAdminApiKey(claim)),
+             _ => Outcome::Failure((Status::NonAuthoritativeInformation,()))
+            }
+            
+        },
         Err(_) => Outcome::Failure((Status::NonAuthoritativeInformation,())),
         // _ => Outcome::Failure((Status::NonAuthoritativeInformation,())),
     } 
@@ -71,6 +60,70 @@ fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()>{
     // return  keys;
  }
 }
+impl<'a, 'r> FromRequest<'a, 'r> for NormalAdminApiKey {
+    type Error = ();
+    
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<NormalAdminApiKey, ()>{
+      
+        let keys: Vec<_> = request.headers().get("authorization").collect();
+    
+    
+        // print!("request header ---> {:#?}",request);
+    
+        // let nkey = ;
+       
+         if keys.is_empty() || keys.len() != 1  || keys[0].trim().is_empty() { 
+           return  Outcome::Failure((Status::Unauthorized,()));
+         }else {
+         match verify_token(keys[0]) {
+            Ok(claim) => {
+                match claim["role"].as_str() {
+                 "1" => Outcome::Failure((Status::Forbidden,())),
+                 "2" => Outcome::Success(NormalAdminApiKey(claim)),
+                 "3" => Outcome::Success(NormalAdminApiKey(claim)),
+                 _ => Outcome::Failure((Status::NonAuthoritativeInformation,()))
+                }
+                
+            },
+            Err(_) => Outcome::Failure((Status::NonAuthoritativeInformation,())),
+            // _ => Outcome::Failure((Status::NonAuthoritativeInformation,())),
+        } 
+      }
+        // return  keys;
+     }
+}
+impl<'a, 'r> FromRequest<'a, 'r> for UserApiKey {
+        type Error = ();
+        
+        fn from_request(request: &'a Request<'r>) -> request::Outcome<UserApiKey, ()>{
+          
+            let keys: Vec<_> = request.headers().get("authorization").collect();
+        
+        
+            // print!("request header ---> {:#?}",request);
+        
+            // let nkey = ;
+           
+             if keys.is_empty() || keys.len() != 1  || keys[0].trim().is_empty() { 
+               return  Outcome::Failure((Status::Unauthorized,()));
+             }else {
+             match verify_token(keys[0]) {
+                Ok(claim) => {
+                    match claim["role"].as_str() {
+                     "1" => Outcome::Success(UserApiKey(claim)),
+                     "2" => Outcome::Success(UserApiKey(claim)),
+                     "3" => Outcome::Success(UserApiKey(claim)),
+                     _ => Outcome::Failure((Status::NonAuthoritativeInformation,()))
+                    }
+                    
+                },
+                Err(_) => Outcome::Failure((Status::NonAuthoritativeInformation,())),
+                // _ => Outcome::Failure((Status::NonAuthoritativeInformation,())),
+            } 
+          }
+            // return  keys;
+         }
+        }
 
 
 

@@ -4,17 +4,17 @@ use chrono::prelude::*;
 use crate::product_handler;
 use crate::category_handler;
 use crate::models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate};
-use crate::auth::ApiKey;
+use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
 
 
 #[get("/categories")]
-pub fn avaliable_category() -> JsonValue {
+pub fn avaliable_category(_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return category_handler::get_avaliable_category(connect);
 }
 
 #[post("/add/category", data = "<item>")]
-pub fn add_new_category(item:Form<CategoryData>,_auth:ApiKey) -> JsonValue {
+pub fn add_new_category(item:Form<CategoryData>,_auth:NormalAdminApiKey) -> JsonValue {
     let time  = Local::now();
     let new_category =  NewCategory::new(
         item.title.to_string(), 
@@ -30,7 +30,7 @@ pub fn add_new_category(item:Form<CategoryData>,_auth:ApiKey) -> JsonValue {
 }
 
 #[put("/update/category", data = "<item>")]
-pub fn update_category(item:Form<CategoryUpdate>,_auth:ApiKey) -> JsonValue {
+pub fn update_category(item:Form<CategoryUpdate>,_auth:NormalAdminApiKey) -> JsonValue {
 
     let time  = Local::now();
 
@@ -47,7 +47,7 @@ pub fn update_category(item:Form<CategoryUpdate>,_auth:ApiKey) -> JsonValue {
 }
 
 #[delete("/delete/category/<id>")]
-pub fn delete_category(id:i32,_auth:ApiKey) -> JsonValue {
+pub fn delete_category(id:i32,_auth:NormalAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return category_handler::delete_category(connect,id);
 }

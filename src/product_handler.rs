@@ -71,7 +71,7 @@ pub fn delete_product(con:PgConnection,pid:String) -> JsonValue {
     use schema::market_products::dsl::*;
     diesel::delete(market_products.filter(product_id.eq(pid)))
     .execute(&con)
-        .expect("Error deleting category");
+        .expect("Error deleting product");
     return json!({
             "status": true,
             "data":"Product deleted successfully"
@@ -137,6 +137,7 @@ pub fn get_single_product(con:PgConnection,pid:String) -> JsonValue {
         "data":results
     })
  }
+
 pub fn get_product_by_category(con:PgConnection,cate_id:String, query:String) -> JsonValue {
     use schema::market_products::dsl::*;
     let results = market_products.filter(category_id.eq(cate_id).and(title.ilike(query)).and(temp_delete.eq(false)))
