@@ -4,11 +4,11 @@ use chrono::prelude::*;
 use crate::product_handler;
 use crate::category_handler;
 use crate::models::{NewCategory,UpdateCategory,CategoryData,CategoryUpdate};
-use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
+use crate::auth::{NormalAdminApiKey};
 
 
 #[get("/categories")]
-pub fn avaliable_category(_auth:UserApiKey) -> JsonValue {
+pub fn avaliable_category() -> JsonValue {
     let connect = product_handler::establish_connection();
     return category_handler::get_avaliable_category(connect);
 }

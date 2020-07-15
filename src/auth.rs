@@ -4,7 +4,7 @@ use hmac::{Hmac, NewMac};
 use jwt::*;
 use sha2::Sha256;
 use std::collections::BTreeMap;
-use rocket_contrib::json::{JsonValue};
+
 
 
 
@@ -13,7 +13,6 @@ use rocket_contrib::json::{JsonValue};
 pub struct  SuperAdminApiKey (pub BTreeMap<String, String>);
 pub struct  NormalAdminApiKey (pub BTreeMap<String, String>);
 pub struct  UserApiKey (pub BTreeMap<String, String>);
-
 
 pub fn verify_token(token:&str) -> Result<BTreeMap<String, String>,Error>{
     // type Error  = !;
@@ -45,6 +44,8 @@ fn from_request(request: &'a Request<'r>) -> request::Outcome<SuperAdminApiKey, 
      }else {
      match verify_token(keys[0]) {
         Ok(claim) => {
+          //  println!("user role ---> {:#?}",claim);
+
             match claim["role"].as_str() {
              "1" => Outcome::Failure((Status::Forbidden,())),
              "2" => Outcome::Failure((Status::NonAuthoritativeInformation,())),
@@ -77,6 +78,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for NormalAdminApiKey {
          }else {
          match verify_token(keys[0]) {
             Ok(claim) => {
+              // println!("user role ---> {:#?}",claim);
                 match claim["role"].as_str() {
                  "1" => Outcome::Failure((Status::Forbidden,())),
                  "2" => Outcome::Success(NormalAdminApiKey(claim)),
@@ -109,6 +111,8 @@ impl<'a, 'r> FromRequest<'a, 'r> for UserApiKey {
              }else {
              match verify_token(keys[0]) {
                 Ok(claim) => {
+                  // println!("user role ---> {:#?}",claim);
+
                     match claim["role"].as_str() {
                      "1" => Outcome::Success(UserApiKey(claim)),
                      "2" => Outcome::Success(UserApiKey(claim)),

@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
-use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
+use crate::auth::{NormalAdminApiKey,SuperAdminApiKey};
 
 
 #[get("/")]
@@ -192,6 +192,13 @@ pub fn bad_request() -> JsonValue {
     json!({
         "status": false,
         "message": "Whoops! Looks like you send a bad request."
+    })
+}
+#[catch(403)]
+pub fn forbidden_request() -> JsonValue {
+    json!({
+        "status": false,
+        "message": "Whoops! Looks like you are forbidden from accessing this service, contact admin."
     })
 }
 #[catch(422)]

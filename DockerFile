@@ -1,14 +1,49 @@
-FROM lichoung/rust
+FROM alpine:latest as builder
 
-ENV ROCKET_ADDRESS=0.0.0.0
-ENV ROCKET_PORT=7000
+# Update the system as needed
+RUN apk update
 
-ADD src  /app
+# Install typical system packages we use for building our app.
+RUN apk add binutils build-base ca-certificates curl file g++ gcc libressl-dev make patch postgresql rust sqlite
 
-WORKDIR /app
+# Install Rust with typical settings and as a typical user.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-RUN rustup default nightly
+# Install Rust nightly and target for musl 
+RUN . ~/.cargo/env && rustup toolchain install nightly 
+RUN . ~/.cargo/env && rustup default nightly
+RUN . ~/.cargo/env && rustup target add x86_64-unknown-linux-musl
 
-RUN cargo build
+WORKDIR /usr/src/market_service
 
-CMD ["cargo","run"]
+COPY Cargo.toml Cargo.toml
+
+RUN mkdir src/
+
+RUN echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs
+
+RUN . ~/.cargo/env && RUSTFLAGS="-C target-feature=-crt-static" cargo build --release --target=x86_64-unknown-linux-musl
+
+RUN rm -f target/x86_64-unknown-linux-musl/release/deps/market_service*
+
+COPY . .
+
+# ------------------------------------------------------------------------------
+# Final Stage
+# ------------------------------------------------------------------------------
+
+FROM rustlang/rust:nightly-alpine3.12 
+
+RUN addgroup -g 1000 market_service
+
+RUN adduser -D -s /bin/sh -u 1000 -G market_service market_service
+
+WORKDIR /home/market_service/bin/
+
+COPY --from=builder /usr/src/market_service/target/x86_64-unknown-linux-musl/release/market_service .
+
+RUN chown market_service:market_service market_service
+
+USER market_service
+
+CMD ["./market_service"]

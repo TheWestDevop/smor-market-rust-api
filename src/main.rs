@@ -64,7 +64,8 @@ fn main() {
             product_route::bad_request,
             product_route::unprocessable_entity,
             product_route::not_authorised,
-            product_route::not_authoritative
+            product_route::not_authoritative,
+            product_route::forbidden_request
         ]
     )
     .launch();

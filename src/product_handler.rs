@@ -134,7 +134,7 @@ pub fn get_single_product(con:PgConnection,pid:String) -> JsonValue {
     // print!("query result  {:?}",results);
     return json!({
         "status": true,
-        "data":results
+        "data":results[0]
     })
  }
 
@@ -152,7 +152,7 @@ pub fn get_product_by_category(con:PgConnection,cate_id:String, query:String) ->
 
 pub fn get_all_temp_delete_products(con:PgConnection) -> JsonValue {
     use schema::market_products::dsl::*;
-    let results = market_products.filter(temp_delete.eq(false))
+    let results = market_products.filter(temp_delete.eq(true))
     .load::<Product>(&con)
     .expect("Error loading avaliable products");
     // print!("query result  {:?}",results);

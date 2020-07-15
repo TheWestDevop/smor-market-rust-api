@@ -7,7 +7,6 @@ use crate::order_handler;
 use crate::models::{ NewOrder,UpdateOrder,OrderData,OrderUpdate};
 use crate::auth::{
     NormalAdminApiKey,
-    SuperAdminApiKey,
     UserApiKey
 };
 
