@@ -1,6 +1,7 @@
 use crate::schema::*;
 
 use serde::{Serialize, Deserialize};
+use chrono::Local;
 
 //  use jsonwebtoken::{ decode, Validation,DecodingKey,Algorithm};
 // use jwt
@@ -20,10 +21,10 @@ pub struct Product {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
+    pub product_image: String,
     pub temp_delete:bool,
     pub created_at: String,
     pub update_at: String,
-    pub product_images: String,
 }
 
 #[derive(Insertable,Debug)]
@@ -37,11 +38,10 @@ pub struct NewProduct {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
+    pub product_image: String,
     pub temp_delete:bool,
     pub created_at: String,
     pub update_at: String,
-    pub product_images: String,
-
 } 
 impl NewProduct {
    pub fn new(
@@ -56,7 +56,7 @@ impl NewProduct {
     temp_delete: bool, 
     created_at: String,
     update_at: String,
-    product_images: String,
+    product_image: String,
     ) -> NewProduct {
         NewProduct {
              product_id,
@@ -67,10 +67,10 @@ impl NewProduct {
              avaliable_status,
              store_quantity,
              store_location,
+             product_image,
              temp_delete,
              created_at,
              update_at,
-             product_images,
         } 
     }
 }
@@ -86,9 +86,9 @@ pub struct UpdateProduct {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
+    pub product_image: String,
     pub temp_delete:bool,
     pub update_at: String,
-    pub product_images: String,
 } 
 impl UpdateProduct {
    pub fn new(
@@ -102,7 +102,7 @@ impl UpdateProduct {
     store_location: String,
     temp_delete: bool,
     update_at: String,
-    product_images: String, 
+    product_image: String, 
     ) -> UpdateProduct {
         UpdateProduct {
              id,
@@ -113,9 +113,9 @@ impl UpdateProduct {
              avaliable_status,
              store_quantity,
              store_location,
+             product_image,
              temp_delete,
              update_at,
-             product_images,
 
         } 
     }
@@ -276,7 +276,7 @@ impl UpdateOrder {
         pub created_at: String,
         pub update_at: String
     } 
-    #[derive(Queryable,Serialize, Deserialize,Debug)]
+#[derive(Queryable,Serialize, Deserialize,Debug)]
     pub struct Category {
         pub id:i32,
         pub title: String,
@@ -285,8 +285,8 @@ impl UpdateOrder {
         pub update_at: String
     }
     
-    #[derive(Insertable,Debug)]
-    #[table_name="market_products_categories"]
+#[derive(Insertable,Debug)]
+#[table_name="market_products_categories"]
     pub struct NewCategory {
         pub title: String,
         pub details: String,
@@ -332,8 +332,37 @@ impl UpdateOrder {
             } 
         }
     }
-    
-    
+
+    #[derive(Queryable,Serialize, Deserialize,Debug)]
+   pub struct Coupon{
+       pub id:i32,
+       pub coupon:String,
+       pub amount:String,
+       pub coupon_use_status:bool,
+       pub created_at:String,
+       pub update_at:String
+   } 
+
+   #[derive(Insertable,Debug)]
+   #[table_name="market_products_coupons"]
+    pub struct NewCoupon{
+    pub coupon:String,
+    pub amount:String,
+    pub created_at:String,
+    pub update_at:String
+} 
+   impl NewCoupon {
+       pub fn new(coupon:String,amount:String) -> NewCoupon {
+          let  created_at = Local::now().to_string();
+          let  update_at = Local::now().to_string();
+            NewCoupon{
+                coupon,
+                amount,
+                created_at,
+                update_at
+            }
+       }
+   }
     
     
     #[derive(FromForm,Debug)]
@@ -349,7 +378,11 @@ impl UpdateOrder {
             pub created_at: String,
             pub update_at: String
         } 
-
+        #[derive(FromForm,Debug)]
+        pub struct CouponData {
+            pub coupon: String,
+            pub amount: String,
+        }
 
 
 

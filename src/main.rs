@@ -41,6 +41,7 @@ fn main() {
         product_route::get_product,
         category_routes::avaliable_category,
         order_routes::make_order,
+        order_routes::use_coupon,
         order_routes::all_user_orders,
         ])
     .mount("/api/v1/admin", routes![
@@ -55,7 +56,15 @@ fn main() {
         category_routes::delete_category,
         order_routes::update_status,
         order_routes::all_orders,
-        
+        order_routes::all_coupons,
+        order_routes::all_unused_coupons,
+        order_routes::all_used_coupons,
+        order_routes::create_coupon,
+        order_routes::remove_coupon,
+        order_routes::all_pre_orders,
+        order_routes::all_normal_orders,
+        order_routes::all_pending_pre_orders,
+        order_routes::all_pending_normal_orders,
         ])
     .register(
         catchers![

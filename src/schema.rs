@@ -9,10 +9,10 @@ table! {
         avaliable_status -> Varchar,
         store_quantity -> Varchar,
         store_location -> Varchar,
+        product_image -> Text,
         temp_delete -> Bool,
         created_at -> Varchar,
         update_at -> Varchar,
-        product_images -> Text,
     }
 }
 
@@ -31,6 +31,7 @@ table! {
         id -> Int4,
         coupon -> Varchar,
         amount -> Varchar,
+        coupon_use_status -> Bool,
         created_at -> Varchar,
         update_at -> Varchar,
     }
@@ -52,10 +53,9 @@ table! {
     }
 }
 
-
 allow_tables_to_appear_in_same_query!(
     market_products,
     market_products_categories,
     market_products_coupons,
-    market_products_orders
+    market_products_orders,
 );
