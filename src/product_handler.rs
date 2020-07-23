@@ -34,7 +34,7 @@ pub fn update_old_product(con:PgConnection,product:UpdateProduct) -> JsonValue {
     let results = diesel::update(&product)
                                                 .set((
                                                     title.eq(&product.title),
-                                                    product_image.eq(&product.product_image),
+                                                    image.eq(&product.image),
                                                     category_id.eq(&product.category_id),
                                                     published.eq(&product.published),
                                                     price.eq(&product.price),
@@ -42,7 +42,8 @@ pub fn update_old_product(con:PgConnection,product:UpdateProduct) -> JsonValue {
                                                     store_quantity.eq(&product.store_quantity),
                                                     store_location.eq(&product.store_location),
                                                     temp_delete.eq(&product.temp_delete),
-                                                    update_at.eq(&product.update_at)
+                                                    update_at.eq(&product.update_at),
+                                                    description.eq(&product.description)
                                                 ))
                                                 .get_result::<Product>(&con)
                                                 .expect("Error updating product");

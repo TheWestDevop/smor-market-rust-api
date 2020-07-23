@@ -17,8 +17,8 @@ pub fn avaliable_category() -> JsonValue {
 pub fn add_new_category(item:Form<CategoryData>,_auth:NormalAdminApiKey) -> JsonValue {
     let time  = Local::now();
     let new_category =  NewCategory::new(
+        item.icon.to_string(),  
         item.title.to_string(), 
-        item.details.to_string(),  
         time.to_string(), 
         time.to_string()
     );
@@ -36,8 +36,8 @@ pub fn update_category(item:Form<CategoryUpdate>,_auth:NormalAdminApiKey) -> Jso
 
     let update_product =  UpdateCategory::new(
         item.id, 
+        item.icon.to_string(), 
         item.title.to_string(), 
-        item.details.to_string(), 
         time.to_string()
     );
 

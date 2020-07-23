@@ -9,7 +9,9 @@ table! {
         avaliable_status -> Varchar,
         store_quantity -> Varchar,
         store_location -> Varchar,
-        product_image -> Text,
+        image -> Text,
+        description -> Text,
+        rating -> Int4,
         temp_delete -> Bool,
         created_at -> Varchar,
         update_at -> Varchar,
@@ -19,8 +21,8 @@ table! {
 table! {
     market_products_categories (id) {
         id -> Int4,
+        icon -> Varchar,
         title -> Varchar,
-        details -> Varchar,
         created_at -> Varchar,
         update_at -> Varchar,
     }
@@ -42,7 +44,10 @@ table! {
         id -> Int4,
         order_id -> Varchar,
         user_id -> Varchar,
+        delivery_state -> Varchar,
+        delivery_lga -> Varchar,
         delivery_address -> Varchar,
+        delivery_at -> Varchar,
         product_ordered -> Text,
         total_cost -> Varchar,
         order_type -> Int4,

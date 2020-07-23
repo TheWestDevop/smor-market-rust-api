@@ -54,7 +54,10 @@ pub fn make_order(order:Form<OrderData>, _auth:UserApiKey) -> JsonValue {
    let order =  NewOrder::new(
        order_id.to_string(), 
        order.user_id.to_string(), 
+       order.delivery_state.to_string(),
+       order.delivery_lga.to_string(), 
        order.delivery_address.to_string(), 
+       order.delivery_at.to_string(), 
        order.product_ordered.to_string(),
        order.total_cost.to_string(), 
        order.coupon.to_string(), 
@@ -74,8 +77,11 @@ pub fn update_status(order:Form<OrderUpdate>,_auth:NormalAdminApiKey) -> JsonVal
      UpdateOrder::new(
          order.id, 
          order.order_id.to_string(), 
-         order.user_id.to_string(), 
+         order.user_id.to_string(),
+         order.delivery_state.to_string(), 
+         order.delivery_lga.to_string(), 
          order.delivery_address.to_string(), 
+         order.delivery_at.to_string(), 
          order.product_ordered.to_string(), 
          order.total_cost.to_string(), 
          order.coupon.clone(), 
@@ -88,14 +94,15 @@ pub fn update_status(order:Form<OrderUpdate>,_auth:NormalAdminApiKey) -> JsonVal
 
 #[put("/create/coupon", data = "<coupon>")]
 pub fn create_coupon(coupon:Form<CouponData>,_auth:SuperAdminApiKey) -> JsonValue {
+    //coupon must be six in length
     let connect = product_handler::establish_connection();
     let data = NewCoupon::new(coupon.coupon.to_string(), coupon.amount.to_string());
     return order_handler::add_coupon(connect, data);
 }
-#[patch("/coupon/use/<coupon>")]
+#[get("/coupon/use/<coupon>")]
 pub fn use_coupon(coupon:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
-    return order_handler::coupon_used(connect,coupon);
+    return order_handler::coupon_use(connect,coupon);
 }
 #[get("/all/coupon")]
 pub fn all_coupons(_auth:NormalAdminApiKey) -> JsonValue {

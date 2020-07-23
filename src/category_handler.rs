@@ -26,7 +26,7 @@ pub fn update_old_category(con:PgConnection,category:UpdateCategory) -> JsonValu
     let results = diesel::update(&category)
                                                 .set((
                                                     title.eq(&category.title),
-                                                    details.eq(&category.details),
+                                                    icon.eq(&category.icon),
                                                     update_at.eq(&category.update_at)
                                                 ))
                                                 .get_results::<Category>(&con)

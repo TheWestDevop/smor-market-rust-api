@@ -146,19 +146,27 @@ pub fn all_unused_coupon(con:PgConnection)-> JsonValue{
         "data":results
     })
 }
-pub fn coupon_used(con:PgConnection,cid:String)-> JsonValue{
+pub fn coupon_use(con:PgConnection,cid:String)-> JsonValue{
     use schema::market_products_coupons::dsl::*;
 
-    diesel::update(market_products_coupons.filter(coupon.eq(cid)))
+   let coupon_status = diesel::update(market_products_coupons.filter(coupon.eq(cid).and(coupon_use_status.eq(false))))
                                                 .set(
                                                     coupon_use_status.eq(true)
                                                 )
-                                                .execute(&con)
+                                                .get_result::<Coupon>(&con)
                                                 .expect("Error updating coupon status");
-    return json!({
-                "status": true,
-                "data":"coupon status update successfully."
-            })
+    if coupon_status.coupon.eq("") {
+        return json!({
+            "status": true,
+            "data":coupon_status
+        })
+    }else {
+        return json!({
+            "status": false,
+            "data":"coupon has been used."
+        })
+    }
+    
 }
 pub fn delete_coupon(con:PgConnection,cid:i32)-> JsonValue{
     use schema::market_products_coupons::dsl::*;

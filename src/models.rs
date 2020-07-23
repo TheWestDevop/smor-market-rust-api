@@ -21,7 +21,9 @@ pub struct Product {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
-    pub product_image: String,
+    pub image: String,
+    pub description: String,
+    pub rating:i32,
     pub temp_delete:bool,
     pub created_at: String,
     pub update_at: String,
@@ -38,7 +40,8 @@ pub struct NewProduct {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
-    pub product_image: String,
+    pub image: String,
+    pub description: String,
     pub temp_delete:bool,
     pub created_at: String,
     pub update_at: String,
@@ -56,7 +59,8 @@ impl NewProduct {
     temp_delete: bool, 
     created_at: String,
     update_at: String,
-    product_image: String,
+    image: String,
+    description: String,
     ) -> NewProduct {
         NewProduct {
              product_id,
@@ -67,7 +71,8 @@ impl NewProduct {
              avaliable_status,
              store_quantity,
              store_location,
-             product_image,
+             image,
+             description,
              temp_delete,
              created_at,
              update_at,
@@ -86,37 +91,39 @@ pub struct UpdateProduct {
     pub avaliable_status: String,
     pub store_quantity: String,
     pub store_location: String,
-    pub product_image: String,
+    pub image: String,
+    pub description: String,
     pub temp_delete:bool,
     pub update_at: String,
 } 
 impl UpdateProduct {
    pub fn new(
     id:i32,
-    category_id: String,
+    category_id:String,
     title: String,
-    published: bool, 
-    price: String, 
+    published: bool,
+    price: String,
     avaliable_status: String,
     store_quantity: String,
     store_location: String,
-    temp_delete: bool,
+    image: String,
+    description: String,
+    temp_delete:bool,
     update_at: String,
-    product_image: String, 
     ) -> UpdateProduct {
         UpdateProduct {
-             id,
-             category_id,
-             title,
-             published,
-             price,
-             avaliable_status,
-             store_quantity,
-             store_location,
-             product_image,
-             temp_delete,
-             update_at,
-
+            id,
+            category_id,
+            title,
+            published,
+            price,
+            avaliable_status,
+            store_quantity,
+            store_location,
+            image,
+            description,
+            temp_delete,
+            update_at,
         } 
     }
 }
@@ -134,6 +141,7 @@ impl UpdateProduct {
         pub store_quantity: String,
         pub store_location: String,
         pub published: bool,
+        pub description: String,
     }
 #[derive(FromForm,Debug)]
     pub struct UpdateForm {
@@ -149,7 +157,8 @@ impl UpdateProduct {
         pub store_location: String,
         pub temp_delete:bool,
         pub created_at: String,
-        pub update_at: String
+        pub update_at: String,
+        pub description: String,
     } 
 
 #[derive(Queryable,Serialize, Deserialize,Debug)]
@@ -157,7 +166,10 @@ impl UpdateProduct {
         pub id:i32,
         pub order_id: String,
         pub user_id: String,
+        pub delivery_state: String,
+        pub delivery_lga: String,
         pub delivery_address: String,
+        pub delivery_at: String,
         pub product_ordered: String,
         pub total_cost: String,
         pub order_type:i32,
@@ -172,7 +184,10 @@ impl UpdateProduct {
 pub struct NewOrder {
     pub order_id: String,
     pub user_id: String,
+    pub delivery_state: String,
+    pub delivery_lga: String,
     pub delivery_address: String,
+    pub delivery_at: String,
     pub product_ordered: String,
     pub total_cost: String,
     pub coupon: String,
@@ -184,8 +199,11 @@ pub struct NewOrder {
 impl NewOrder {
    pub fn new(
     order_id: String,
-    user_id: String, 
+    user_id: String,
+    delivery_state: String,
+    delivery_lga: String,
     delivery_address: String,
+    delivery_at: String,
     product_ordered: String,
     total_cost: String,
     coupon: String,
@@ -197,7 +215,10 @@ impl NewOrder {
         NewOrder {
              order_id,
              user_id,
+             delivery_state,
+             delivery_lga,
              delivery_address,
+             delivery_at,
              product_ordered,
              total_cost,
              coupon,
@@ -215,7 +236,10 @@ pub struct UpdateOrder {
     pub id:i32,
     pub order_id: String,
     pub user_id: String,
+    pub delivery_state: String,
+    pub delivery_lga: String,
     pub delivery_address: String,
+    pub delivery_at: String,
     pub product_ordered: String,
     pub total_cost: String,
     pub coupon: String,
@@ -228,7 +252,10 @@ impl UpdateOrder {
     id:i32,
     order_id: String,
     user_id: String, 
+    delivery_state: String,
+    delivery_lga: String,
     delivery_address: String,
+    delivery_at: String,
     product_ordered: String,
     total_cost: String,
     coupon: String,
@@ -240,7 +267,10 @@ impl UpdateOrder {
              id,
              order_id,
              user_id,
+             delivery_state,
+             delivery_lga,
              delivery_address,
+             delivery_at,
              product_ordered,
              total_cost,
              coupon,
@@ -256,7 +286,10 @@ impl UpdateOrder {
 #[derive(FromForm,Debug)]
     pub struct OrderData {
         pub user_id: String,
+        pub delivery_state: String,
+        pub delivery_lga: String,
         pub delivery_address: String,
+        pub delivery_at: String,
         pub product_ordered: String,
         pub total_cost: String,
         pub coupon: String,
@@ -267,7 +300,10 @@ impl UpdateOrder {
         pub id:i32,
         pub order_id: String,
         pub user_id: String,
+        pub delivery_state: String,
+        pub delivery_lga: String,
         pub delivery_address: String,
+        pub delivery_at: String,
         pub product_ordered: String,
         pub total_cost: String,
         pub coupon: String,
@@ -288,21 +324,21 @@ impl UpdateOrder {
 #[derive(Insertable,Debug)]
 #[table_name="market_products_categories"]
     pub struct NewCategory {
+        pub icon: String,
         pub title: String,
-        pub details: String,
         pub created_at: String,
         pub update_at: String
     } 
     impl NewCategory {
        pub fn new(
+        icon: String, 
         title: String,
-        details: String, 
         created_at: String,
         update_at: String,
         ) -> NewCategory {
             NewCategory {
+                 icon,
                  title,
-                 details,
                  created_at,
                  update_at
             } 
@@ -313,21 +349,21 @@ impl UpdateOrder {
     #[table_name="market_products_categories"]
     pub struct UpdateCategory {
         pub id:i32,
+        pub icon: String,
         pub title: String,
-        pub details: String,
         pub update_at: String
     } 
     impl UpdateCategory {
        pub fn new(
         id:i32,
+        icon: String, 
         title: String,
-        details: String, 
         update_at: String,
         ) -> UpdateCategory {
             UpdateCategory {
                  id,
+                 icon,
                  title,
-                 details,
                  update_at
             } 
         }
@@ -368,13 +404,13 @@ impl UpdateOrder {
     #[derive(FromForm,Debug)]
         pub struct CategoryData {
             pub title: String,
-            pub details: String,
+            pub icon: String,
         }
     #[derive(FromForm,Debug)]
         pub struct CategoryUpdate {
             pub id:i32,
             pub title: String,
-            pub details: String,
+            pub icon: String,
             pub created_at: String,
             pub update_at: String
         } 

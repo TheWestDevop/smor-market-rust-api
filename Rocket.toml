@@ -2,7 +2,7 @@
  [development]
  address = "localhost"
  port = 8001
- keep_alive = 5
+ keep_alive = 0
  log = "normal"
  limits = { forms = 32768 }
 
@@ -12,7 +12,7 @@
 
  address = "0.0.0.0"
  port = 8001
- keep_alive = 5
+ keep_alive = 0
  log = "normal"
  limits = { forms = 32768 }
 
@@ -22,7 +22,7 @@
 
  address = "0.0.0.0"
  port = 7001
- keep_alive = 5
+ keep_alive = 0
  log = "critical"
  limits = { forms = 32768 }
 

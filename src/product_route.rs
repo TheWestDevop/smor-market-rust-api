@@ -86,6 +86,7 @@ pub fn add_new_product(item:Form<FormProduct>,_auth:NormalAdminApiKey) -> JsonVa
         time.to_string(), 
         time.to_string(),
         item.product_images.to_string(),
+        item.description.to_string(),
     );
 
     // print!("New Product is {:?}",new_product);
@@ -111,10 +112,10 @@ pub fn update_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> JsonValu
         item.avaliable_status.to_string(), 
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
+        item.product_images.to_string(), 
+        item.description.to_string(),
         item.temp_delete, 
         time.to_string(),
-        item.product_images.to_string(), 
-
     );
 
     // print!("New Product is {:?}",new_product);
@@ -139,10 +140,10 @@ pub fn temp_delete_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> Jso
         item.avaliable_status.to_string(), 
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
-        item.temp_delete, 
+        item.product_images.to_string(),
         time.to_string(),
-        item.product_images.to_string(), 
-
+        item.temp_delete, 
+        time.to_string()
     );
 
     let connect = product_handler::establish_connection();
