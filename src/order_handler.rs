@@ -45,6 +45,7 @@ pub fn get_all_orders(con:PgConnection) -> JsonValue {
     })
 }
 pub fn get_all_pre_orders(con:PgConnection) -> JsonValue {
+
     use schema::market_products_orders::dsl::*;
     
     let results = market_products_orders.filter(order_type.eq(2)).load::<Order>(&con)
@@ -88,7 +89,8 @@ pub fn get_all_pending_normal_orders(con:PgConnection) -> JsonValue {
         "data":results
     })
 }
-pub fn get_all_user_orders(con:PgConnection,uid:String) -> JsonValue{
+pub fn get_all_user_orders(con:PgConnection,uid:String) -> JsonValue {
+    
     use schema::market_products_orders::dsl::*;
     let results = market_products_orders.filter(user_id.eq(uid))
     .load::<Order>(&con)

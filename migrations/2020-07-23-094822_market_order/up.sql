@@ -1,4 +1,7 @@
 -- Your SQL goes here
+-- For order_type 1 ==> Fast Order
+--                2 ===> Pre Order
+
 CREATE TABLE market_products_orders (
   id SERIAL PRIMARY KEY,
   order_id VARCHAR(255) NOT NULL,

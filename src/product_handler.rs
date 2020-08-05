@@ -52,7 +52,6 @@ pub fn update_old_product(con:PgConnection,product:UpdateProduct) -> JsonValue {
                 "data":results
             })
 }
-
 pub fn temp_delete_and_undelete_product(con:PgConnection,product:UpdateProduct) -> JsonValue{
     use schema::market_products::dsl::*;
     diesel::update(&product)
@@ -67,7 +66,6 @@ pub fn temp_delete_and_undelete_product(con:PgConnection,product:UpdateProduct) 
                 "data":"Product state changed succesfully"
             })
 }
-
 pub fn delete_product(con:PgConnection,pid:String) -> JsonValue {
     use schema::market_products::dsl::*;
     diesel::delete(market_products.filter(product_id.eq(pid)))
