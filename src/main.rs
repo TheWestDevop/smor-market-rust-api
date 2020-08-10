@@ -10,6 +10,7 @@ extern crate chrono;
 extern crate jwt;
 extern crate hmac;
 extern crate sha2;
+extern crate lettre_email;
 
 
 

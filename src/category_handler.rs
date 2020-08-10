@@ -39,7 +39,7 @@ pub fn update_old_category(con:PgConnection,category:UpdateCategory) -> JsonValu
 
 pub fn get_avaliable_category(con:PgConnection) -> JsonValue {
     use schema::market_products_categories::dsl::*;
-    let results = market_products_categories.load::<Category>(&con)
+    let results = market_products_categories.order(id.desc()).load::<Category>(&con)
     .expect("Error loading avaliable category");
     // print!("query result  {:?}",results);
     return json!({

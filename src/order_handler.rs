@@ -36,7 +36,7 @@ pub fn update_order_status(con:PgConnection,order:UpdateOrder) -> JsonValue {
 pub fn get_all_orders(con:PgConnection) -> JsonValue {
     use schema::market_products_orders::dsl::*;
     
-    let results = market_products_orders.load::<Order>(&con)
+    let results = market_products_orders.order(id.desc()).load::<Order>(&con)
     .expect("Error loading orders");
     // print!("query result  {:?}",results);
     return json!({
@@ -48,7 +48,7 @@ pub fn get_all_pre_orders(con:PgConnection) -> JsonValue {
 
     use schema::market_products_orders::dsl::*;
     
-    let results = market_products_orders.filter(order_type.eq(2)).load::<Order>(&con)
+    let results = market_products_orders.filter(order_type.eq(2)).order(id.desc()).load::<Order>(&con)
     .expect("Error loading orders");
     // print!("query result  {:?}",results);
     return json!({
@@ -59,7 +59,7 @@ pub fn get_all_pre_orders(con:PgConnection) -> JsonValue {
 pub fn get_all_normal_orders(con:PgConnection) -> JsonValue {
     use schema::market_products_orders::dsl::*;
     
-    let results = market_products_orders.filter(order_type.eq(1)).load::<Order>(&con)
+    let results = market_products_orders.filter(order_type.eq(1)).order(id.desc()).load::<Order>(&con)
     .expect("Error loading orders");
     // print!("query result  {:?}",results);
     return json!({
@@ -70,7 +70,7 @@ pub fn get_all_normal_orders(con:PgConnection) -> JsonValue {
 pub fn get_all_pending_pre_orders(con:PgConnection) -> JsonValue {
     use schema::market_products_orders::dsl::*;
     
-    let results = market_products_orders.filter(order_type.eq(2).and(order_status.eq(1).or(order_status.eq(2)))).load::<Order>(&con)
+    let results = market_products_orders.filter(order_type.eq(2).and(order_status.eq(1).or(order_status.eq(2)))).order(id.desc()).load::<Order>(&con)
     .expect("Error loading pending pre orders");
     // print!("query result  {:?}",results);
     return json!({
@@ -81,7 +81,7 @@ pub fn get_all_pending_pre_orders(con:PgConnection) -> JsonValue {
 pub fn get_all_pending_normal_orders(con:PgConnection) -> JsonValue {
     use schema::market_products_orders::dsl::*;
     
-    let results = market_products_orders.filter(order_type.eq(1).and(order_status.eq(1).or(order_status.eq(2)))).load::<Order>(&con)
+    let results = market_products_orders.filter(order_type.eq(1).and(order_status.eq(1).or(order_status.eq(2)))).order(id.desc()).load::<Order>(&con)
     .expect("Error loading pending normal orders");
     // print!("query result  {:?}",results);
     return json!({
@@ -92,7 +92,7 @@ pub fn get_all_pending_normal_orders(con:PgConnection) -> JsonValue {
 pub fn get_all_user_orders(con:PgConnection,uid:String) -> JsonValue {
     
     use schema::market_products_orders::dsl::*;
-    let results = market_products_orders.filter(user_id.eq(uid))
+    let results = market_products_orders.filter(user_id.eq(uid)).order(id.desc())
     .load::<Order>(&con)
     .expect("Error loading user orders");
     // print!("query result  {:?}",results);
@@ -118,7 +118,7 @@ pub fn add_coupon(con:PgConnection,coupon:NewCoupon)-> JsonValue {
 pub fn all_coupon(con:PgConnection)-> JsonValue{
     use schema::market_products_coupons::dsl::*;
     
-    let results = market_products_coupons.load::<Coupon>(&con)
+    let results = market_products_coupons.order(id.desc()).load::<Coupon>(&con)
     .expect("Error loading coupons");
     // print!("query result  {:?}",results);
     return json!({
@@ -129,7 +129,7 @@ pub fn all_coupon(con:PgConnection)-> JsonValue{
 pub fn all_used_coupon(con:PgConnection)-> JsonValue{
     use schema::market_products_coupons::dsl::*;
 
-    let results = market_products_coupons.filter(coupon_use_status.eq(true)).load::<Coupon>(&con)
+    let results = market_products_coupons.filter(coupon_use_status.eq(true)).order(id.desc()).load::<Coupon>(&con)
     .expect("Error loading coupons");
     // print!("query result  {:?}",results);
     return json!({
@@ -140,7 +140,7 @@ pub fn all_used_coupon(con:PgConnection)-> JsonValue{
 pub fn all_unused_coupon(con:PgConnection)-> JsonValue{
     use schema::market_products_coupons::dsl::*;
 
-    let results = market_products_coupons.filter(coupon_use_status.eq(false)).load::<Coupon>(&con)
+    let results = market_products_coupons.filter(coupon_use_status.eq(false)).order(id.desc()).load::<Coupon>(&con)
     .expect("Error loading coupons");
     // print!("query result  {:?}",results);
     return json!({
