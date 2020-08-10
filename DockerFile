@@ -8,22 +8,15 @@ COPY diesel.toml diesel.toml
 COPY secret.key secret.key
 COPY . .
 
-# RUN rustup default nightly
-
-# RUN rustup override set nightly
-# ENV DATABASE_URL = "postgres://xwfvbwhp:qRldz9EOmZFy-1BgUx9hWOu_GXFhoag8@ruby.db.elephantsql.com:5432/xwfvbwhp"
 
 RUN cargo build --release
 
-# RUN cargo install --path .
 
 FROM debian:buster-slim
 
 RUN mkdir smor_market
 
 WORKDIR /smor_market
-
-# ENV DATABASE_URL = postgres://xwfvbwhp:qRldz9EOmZFy-1BgUx9hWOu_GXFhoag8@ruby.db.elephantsql.com:5432/xwfvbwhp
 
 # install libpq
 RUN apt-get update; \
@@ -34,7 +27,6 @@ COPY --from=builder /smor_market/target/release/market_service ./
 
 COPY --from=builder /smor_market/Rocket.toml .
 COPY --from=builder /smor_market/diesel.toml .
-COPY --from=builder /smor_market/secret.key .
 COPY --from=builder /smor_market/.env .
 
 
