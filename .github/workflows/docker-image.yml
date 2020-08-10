@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Access Docker
+      env:
+        DOCKER_USER:  ${{secrets.DOCKER_USER}}
+        DOCKER_ACCESS_KEY:  ${{secrets.DOCKER_ACCESS_KEY}}  
+      run: |
+              docker login -u $DOCKER_USER -p $DOCKER_ACCESS_KEY
+    - name: Build the Docker image
+      run: |
+              docker build . -t thewestdevop/smorfarm_market_services
+    - name: Pushing the Docker image
+      run: |
+              docker push thewestdevop/smorfarm_market_services
+
