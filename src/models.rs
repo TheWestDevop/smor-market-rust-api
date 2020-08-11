@@ -315,8 +315,8 @@ impl UpdateOrder {
 #[derive(Queryable,Serialize, Deserialize,Debug)]
     pub struct Category {
         pub id:i32,
+        pub icon: String,
         pub title: String,
-        pub details: String,
         pub created_at: String,
         pub update_at: String
     }
