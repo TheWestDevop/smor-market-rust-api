@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
-use crate::auth::{NormalAdminApiKey,SuperAdminApiKey};
+use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
 
 
 #[get("/")]
@@ -16,13 +16,13 @@ pub fn index() -> JsonValue {
 }
 
 #[get("/avaliable/products")]
-pub fn avaliable_products() -> JsonValue {
+pub fn avaliable_products(_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_avaliable_products(connect);
 }
 
 #[get("/unavaliable/products")]
-pub fn unavaliable_products() -> JsonValue {
+pub fn unavaliable_products(_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_unavaliable_products(connect);
 }
@@ -39,27 +39,27 @@ pub fn all_temp_delete_products(_auth:NormalAdminApiKey) -> JsonValue {
  
 
 #[get("/product/category/<id>")]
-pub fn products_by_category(id:String) -> JsonValue {
+pub fn products_by_category(id:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::product_by_category(connect,id);
 }
 
 
 #[get("/product/search?<product>")]
-pub fn search_product(product:String) -> JsonValue {
+pub fn search_product(product:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_product(connect,product);
 }
 
 
 #[get("/product/<category>/search?<product>")]
-pub fn search_product_by_category(category:String,product:String) -> JsonValue {
+pub fn search_product_by_category(category:String,product:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_product_by_category(connect,category,product);
 }
 
 #[get("/product/<id>")]
-pub fn get_product(id:String) -> JsonValue {
+pub fn get_product(id:String,_auth:NormalAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_single_product(connect,id);
 }
@@ -153,7 +153,7 @@ pub fn temp_delete_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> Jso
 }
 
 #[delete("/delete/product/<id>")]
-pub fn permanent_delete_product(id:String,_auth:SuperAdminApiKey) -> JsonValue {
+pub fn permanent_delete_product(id:String,_auth:NormalAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::delete_product(connect,id);
 }
