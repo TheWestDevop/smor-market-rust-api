@@ -44,13 +44,11 @@ pub fn products_by_category(id:String,_auth:UserApiKey) -> JsonValue {
     return product_handler::product_by_category(connect,id);
 }
 
-
 #[get("/product/search?<product>")]
 pub fn search_product(product:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
     return product_handler::get_product(connect,product);
 }
-
 
 #[get("/product/<category>/search?<product>")]
 pub fn search_product_by_category(category:String,product:String,_auth:UserApiKey) -> JsonValue {
