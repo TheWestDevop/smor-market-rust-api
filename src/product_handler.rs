@@ -79,7 +79,7 @@ pub fn delete_product(con:PgConnection,pid:String) -> JsonValue {
 
 pub fn get_avaliable_products(con:PgConnection) -> JsonValue {
     use schema::market_products::dsl::*;
-    let results = market_products.filter(published.eq(true).and(temp_delete.eq(false)))
+    let results = market_products.filter(avaliable_status.eq(true).and(published.eq(true)).and(temp_delete.eq(false)))
     .order(id.desc())
     .load::<Product>(&con)
     .expect("Error loading avaliable products");
@@ -92,7 +92,7 @@ pub fn get_avaliable_products(con:PgConnection) -> JsonValue {
 
 pub fn get_unavaliable_products(con:PgConnection)-> JsonValue{
     use schema::market_products::dsl::*;
-    let results = market_products.filter(published.eq(false).and(temp_delete.eq(false))).order(id.desc())
+    let results = market_products.filter(avaliable_status.eq(false).and(published.eq(true)).and(temp_delete.eq(false))).order(id.desc())
     .load::<Product>(&con)
     .expect("Error loading unavaliable products");
     // print!("query result  {:?}",results);
@@ -104,7 +104,7 @@ pub fn get_unavaliable_products(con:PgConnection)-> JsonValue{
 
 pub fn product_by_category(con:PgConnection,cate_id:String) -> JsonValue {
     use schema::market_products::dsl::*;
-    let results = market_products.filter(category_id.eq(cate_id).and(temp_delete.eq(false))).order(id.desc())
+    let results = market_products.filter(category_id.eq(cate_id).and(avaliable_status.eq(true)).and(temp_delete.eq(false))).order(id.desc())
     .load::<Product>(&con)
     .expect("Error loading products by category");
     // print!("query result  {:?}",results);
@@ -116,7 +116,7 @@ pub fn product_by_category(con:PgConnection,cate_id:String) -> JsonValue {
 
 pub fn get_product(con:PgConnection,query:String) -> JsonValue {
     use schema::market_products::dsl::*;
-    let results = market_products.filter(title.ilike(query).and(temp_delete.eq(false))).order(id.desc())
+    let results = market_products.filter(title.ilike(query).and(avaliable_status.eq(true)).and(temp_delete.eq(false))).order(id.desc())
     .load::<Product>(&con)
     .expect("Error loading searched products");
     print!("query result  {:?}",results);
@@ -128,14 +128,14 @@ pub fn get_product(con:PgConnection,query:String) -> JsonValue {
 
 pub fn get_single_product(con:PgConnection,pid:String) -> JsonValue {
     use schema::market_products::dsl::*;
-    let result = market_products.filter(product_id.eq(pid).and(temp_delete.eq(false)))
+    let result = market_products.filter(product_id.eq(pid).and(avaliable_status.eq(true)).and(temp_delete.eq(false)))
     .load::<Product>(&con)
     .expect("Error loading  product");
     // print!("query result  {:?}",results);
     if result.len().eq(&0) {
         return json!({
             "status": false,
-            "data":"Product not found"
+            "message":"Product not found"
         })
     }else{
     return json!({

@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
-use crate::auth::{NormalAdminApiKey,SuperAdminApiKey,UserApiKey};
+use crate::auth::{NormalAdminApiKey,UserApiKey};
 
 
 #[get("/")]
@@ -77,7 +77,8 @@ pub fn add_new_product(item:Form<FormProduct>,_auth:NormalAdminApiKey) -> JsonVa
         item.title.to_string(), 
         item.published, 
         item.price.to_string(), 
-        item.avaliable_status.to_string(), 
+        item.avaliable_status,
+        item.avaliable_on.to_string(),
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
         false, 
@@ -107,7 +108,8 @@ pub fn update_product(item:Form<UpdateForm>,_auth:NormalAdminApiKey) -> JsonValu
         item.title.to_string(),
         item.published, 
         item.price.to_string(), 
-        item.avaliable_status.to_string(), 
+        item.avaliable_status,
+        item.avaliable_on.to_string(),
         item.store_quantity.to_string(), 
         item.store_location.to_string(), 
         item.product_images.to_string(), 
