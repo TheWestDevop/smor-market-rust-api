@@ -59,9 +59,23 @@ table! {
     }
 }
 
+table! {
+    market_store (id) {
+        id -> Int4,
+        staff_id -> Varchar,
+        store_keeper -> Varchar,
+        store_location -> Varchar,
+        store_address -> Varchar,
+        active_status -> Bool,
+        created_at -> Varchar,
+        update_at -> Varchar,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     market_products,
     market_products_categories,
     market_products_coupons,
     market_products_orders,
+    market_store,
 );

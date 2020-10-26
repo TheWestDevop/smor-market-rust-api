@@ -25,6 +25,8 @@ mod category_handler;
 mod category_routes;
 mod order_handler;
 mod order_routes;
+mod store_handler;
+mod store_routes;
 mod models;
 mod auth;
 fn main() {
@@ -66,6 +68,10 @@ fn main() {
         order_routes::all_normal_orders,
         order_routes::all_pending_pre_orders,
         order_routes::all_pending_normal_orders,
+        store_routes::avaliable_store,
+        store_routes::add_new_store,
+        store_routes::update_store,
+        store_routes::delete_store
         ])
     .register(
         catchers![

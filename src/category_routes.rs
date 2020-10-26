@@ -34,7 +34,7 @@ pub fn update_category(item:Form<CategoryUpdate>,_auth:NormalAdminApiKey) -> Jso
 
     let time  = Local::now();
 
-    let update_product =  UpdateCategory::new(
+    let update =  UpdateCategory::new(
         item.id, 
         item.icon.to_string(), 
         item.title.to_string(), 
@@ -43,7 +43,7 @@ pub fn update_category(item:Form<CategoryUpdate>,_auth:NormalAdminApiKey) -> Jso
 
     let connect = product_handler::establish_connection();
 
-    return category_handler::update_old_category(connect,update_product);
+    return category_handler::update_old_category(connect,update);
 }
 
 #[delete("/delete/category/<id>")]

@@ -1,5 +1,5 @@
 use crate::schema::*;
-
+use uuid::Uuid;
 use serde::{Serialize, Deserialize};
 use chrono::Local;
 
@@ -428,6 +428,102 @@ impl UpdateOrder {
             pub coupon: String,
             pub amount: String,
         }
+        #[derive(FromForm,Debug)]
+        pub struct StoreData {
+            pub staff_id: String,
+            pub store_keeper: String,
+            pub store_location: String,
+            pub store_address: String
+        }
+
+        #[derive(FromForm,Debug)]
+        pub struct StoreUpdate {
+            pub id:i32,
+            pub staff_id: String,
+            pub store_keeper: String,
+            pub store_location: String,
+            pub store_address: String,
+            pub active_status: bool,
+        }
+        #[derive(Queryable,Serialize, Deserialize,Debug)]
+        pub struct Store {
+            pub id:i32,
+            pub staff_id: String,
+            pub store_keeper: String,
+            pub store_location: String,
+            pub store_address: String,
+            pub active_status: bool,
+            pub created_at: String,
+            pub update_at: String
+        }
+        
+    #[derive(Insertable,Debug)]
+    #[table_name="market_store"]
+        pub struct NewStore {
+            pub staff_id: String,
+            pub store_keeper: String,
+            pub store_location: String,
+            pub store_address: String,
+            pub created_at: String,
+            pub update_at: String
+        } 
+        impl NewStore {
+           pub fn new(
+            staff_id: String,
+            store_keeper: String,
+            store_location: String,
+            store_address: String
+            ) -> NewStore {
+                let created_at = Local::now().to_string();
+                let update_at = Local::now().to_string();
+                let staff_id =  Uuid::new_v5(
+             &Uuid::NAMESPACE_OID,
+             format!("{}-{}-{}",staff_id,store_keeper,store_location).to_string().as_bytes()
+         ).to_string();
+                NewStore {
+                    staff_id,
+                    store_keeper,
+                    store_location,
+                    store_address,
+                    created_at,
+                    update_at,
+                } 
+            }
+        }
+        
+        #[derive(Identifiable,Debug)]
+        #[table_name="market_store"]
+        pub struct UpdateStore {
+            pub id:i32,
+            pub staff_id: String,
+            pub store_keeper: String,
+            pub store_location: String,
+            pub store_address: String,
+            pub active_status: bool,
+            pub update_at: String
+        } 
+        impl UpdateStore {
+           pub fn new(
+            id:i32,
+            staff_id: String,
+            store_keeper: String,
+            store_location: String,
+            store_address: String,
+            active_status: bool,
+            ) -> UpdateStore {
+                let update_at = Local::now().to_string();
+                UpdateStore {
+                     id,
+                     staff_id,
+                     store_keeper,
+                     store_location,
+                     store_address,
+                     active_status,
+                     update_at
+                } 
+            }
+        }
+    
 
 
 
