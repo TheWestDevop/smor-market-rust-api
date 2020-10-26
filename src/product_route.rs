@@ -15,24 +15,24 @@ pub fn index() -> JsonValue {
     })
 }
 
-#[get("/avaliable/products")]
-pub fn avaliable_products(_auth:UserApiKey) -> JsonValue {
+#[get("/avaliable/products/<store_location>")]
+pub fn avaliable_products(store_location:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
-    return product_handler::get_avaliable_products(connect);
+    return product_handler::get_avaliable_products(store_location,connect);
 }
 
-#[get("/unavaliable/products")]
-pub fn unavaliable_products(_auth:UserApiKey) -> JsonValue {
+#[get("/unavaliable/products/<store_location>")]
+pub fn unavaliable_products(store_location:String,_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
-    return product_handler::get_unavaliable_products(connect);
+    return product_handler::get_unavaliable_products(store_location,connect);
 }
 
-#[get("/all/temp/delete/products")]
-pub fn all_temp_delete_products(_auth:NormalAdminApiKey) -> JsonValue {
+#[get("/all/temp/delete/products/<store_location>")]
+pub fn all_temp_delete_products(store_location:String,_auth:NormalAdminApiKey) -> JsonValue {
     
      let connect = product_handler::establish_connection();
 
-     return product_handler::get_all_temp_delete_products(connect)
+     return product_handler::get_all_temp_delete_products(store_location,connect)
    
 }
 
