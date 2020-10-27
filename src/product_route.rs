@@ -5,7 +5,7 @@ use uuid::Uuid;
 use crate::product_handler;
 use crate::store_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
-use crate::auth::{NormalAdminApiKey,UserApiKey};
+use crate::auth::{SuperAdminApiKey,NormalAdminApiKey,UserApiKey};
 
 
 #[get("/")]
@@ -21,6 +21,22 @@ pub fn user_avaliable_products(_auth:UserApiKey) -> JsonValue {
     return product_handler::get_user_avaliable_products(connect);
     
 }
+#[get("/all/stores/unavaliable/products")]
+pub fn all_stores_unavaliable_products(_auth:SuperAdminApiKey) -> JsonValue {
+    let connect = product_handler::establish_connection();
+    return product_handler::get_admin_unavaliable_products(connect);
+   
+}
+
+#[get("/all/stores/temp/delete/products")]
+pub fn all_stores_temp_delete_products(_auth:SuperAdminApiKey) -> JsonValue {
+    
+     let connect = product_handler::establish_connection();
+    
+     return product_handler::get_admin_all_temp_delete_products(connect)
+   
+}
+
 #[get("/avaliable/products/<store_keeper_id>")]
 pub fn avaliable_products(store_keeper_id:String,_auth:NormalAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();

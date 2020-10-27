@@ -48,6 +48,8 @@ fn main() {
         ])
     .mount("/api/v1/admin", routes![
         product_route::index,
+        product_route::all_stores_unavaliable_products,
+        product_route::all_stores_temp_delete_products,
         product_route::avaliable_products,
         product_route::unavaliable_products,
         product_route::add_new_product,

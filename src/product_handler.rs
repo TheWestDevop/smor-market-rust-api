@@ -102,7 +102,32 @@ pub fn get_avaliable_products(store:String,con:PgConnection) -> JsonValue {
     })
  }
 
-pub fn get_unavaliable_products(store:String,con:PgConnection)-> JsonValue{
+
+ pub fn get_admin_unavaliable_products(con:PgConnection)-> JsonValue{
+    use schema::market_products::dsl::*;
+    let results = market_products.filter(avaliable_status.eq(false).and(published.eq(true)).and(temp_delete.eq(false))).order(id.desc())
+    .load::<Product>(&con)
+    .expect("Error loading unavaliable products");
+    // print!("query result  {:?}",results);
+    return json!({
+        "status": true,
+        "data":results
+    })
+ }
+ 
+ pub fn get_admin_all_temp_delete_products(con:PgConnection) -> JsonValue {
+    use schema::market_products::dsl::*;
+    let results = market_products.filter(temp_delete.eq(true)).order(id.desc())
+    .load::<Product>(&con)
+    .expect("Error loading avaliable products");
+    // print!("query result  {:?}",results);
+    return json!({
+        "status": true,
+        "data":results
+    })
+ }
+
+ pub fn get_unavaliable_products(store:String,con:PgConnection)-> JsonValue{
     use schema::market_products::dsl::*;
     let results = market_products.filter(store_location.eq(store).and(avaliable_status.eq(false)).and(published.eq(true)).and(temp_delete.eq(false))).order(id.desc())
     .load::<Product>(&con)
