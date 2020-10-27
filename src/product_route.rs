@@ -3,6 +3,7 @@ use rocket::request::{Form};
 use chrono::prelude::*;
 use uuid::Uuid;
 use crate::product_handler;
+use crate::store_handler;
 use crate::models::{FormProduct,NewProduct,UpdateProduct,UpdateForm};
 use crate::auth::{NormalAdminApiKey,UserApiKey};
 
@@ -14,26 +15,54 @@ pub fn index() -> JsonValue {
         "message": "Hello, Welcome to smorfarm market web service"
     })
 }
-
-#[get("/avaliable/products/<store_location>")]
-pub fn avaliable_products(store_location:String,_auth:UserApiKey) -> JsonValue {
+#[get("/avaliable/products")]
+pub fn user_avaliable_products(_auth:UserApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
-    return product_handler::get_avaliable_products(store_location,connect);
+    return product_handler::get_user_avaliable_products(connect);
+    
+}
+#[get("/avaliable/products/<store_keeper_id>")]
+pub fn avaliable_products(store_keeper_id:String,_auth:NormalAdminApiKey) -> JsonValue {
+    let connect = product_handler::establish_connection();
+    let store_location = store_handler::get_store_location(store_keeper_id,connect);
+    if store_location == "none"{
+        return json!({
+            "status": false,
+            "message": "No Store Assign To User, Contact Super Admin"
+        })
+    }else{
+        return product_handler::get_avaliable_products(store_location,product_handler::establish_connection());
+    }
+    
 }
 
-#[get("/unavaliable/products/<store_location>")]
-pub fn unavaliable_products(store_location:String,_auth:UserApiKey) -> JsonValue {
+#[get("/unavaliable/products/<store_keeper_id>")]
+pub fn unavaliable_products(store_keeper_id:String,_auth:NormalAdminApiKey) -> JsonValue {
     let connect = product_handler::establish_connection();
-    return product_handler::get_unavaliable_products(store_location,connect);
+    let store_location = store_handler::get_store_location(store_keeper_id,connect);
+    if store_location == "none"{
+        return json!({
+            "status": false,
+            "message": "No Store Assign To User, Contact Super Admin"
+        })
+    }else{
+    return product_handler::get_unavaliable_products(store_location,product_handler::establish_connection());
+   }
 }
 
-#[get("/all/temp/delete/products/<store_location>")]
-pub fn all_temp_delete_products(store_location:String,_auth:NormalAdminApiKey) -> JsonValue {
+#[get("/all/temp/delete/products/<store_keeper_id>")]
+pub fn all_temp_delete_products(store_keeper_id:String,_auth:NormalAdminApiKey) -> JsonValue {
     
      let connect = product_handler::establish_connection();
-
-     return product_handler::get_all_temp_delete_products(store_location,connect)
-   
+    let store_location = store_handler::get_store_location(store_keeper_id,connect);
+    if store_location == "none"{
+        return json!({
+            "status": false,
+            "message": "No Store Assign To User, Contact Super Admin"
+        })
+    }else{
+     return product_handler::get_all_temp_delete_products(store_location,product_handler::establish_connection())
+   }
 }
 
  

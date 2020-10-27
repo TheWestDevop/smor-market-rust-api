@@ -36,8 +36,7 @@ fn main() {
     rocket::ignite()
     .mount("/api/v1", routes![
         product_route::index,
-        product_route::avaliable_products,
-        product_route::unavaliable_products,
+        product_route::user_avaliable_products,
         product_route::search_product,
         product_route::search_product_by_category,
         product_route::products_by_category,
@@ -49,6 +48,8 @@ fn main() {
         ])
     .mount("/api/v1/admin", routes![
         product_route::index,
+        product_route::avaliable_products,
+        product_route::unavaliable_products,
         product_route::add_new_product,
         product_route::update_product,
         product_route::temp_delete_product,

@@ -57,3 +57,16 @@ pub fn delete_store(con:PgConnection,sid:i32) -> JsonValue {
             "data":"Store deleted successfully"
         })
 }
+
+pub fn get_store_location(keeper_id:String,con:PgConnection) -> String {
+    use schema::market_store::dsl::*;
+
+    let result = market_store.filter(staff_id.eq(&keeper_id)).load::<Store>(&con)
+    .expect("Error loading avaliable store");
+     if result.len().eq(&0){
+         return "none".to_string();
+     }else{
+        let store = &result[0].store_location;
+        return store.to_string();
+     }
+}
