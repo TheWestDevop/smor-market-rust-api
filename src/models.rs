@@ -476,10 +476,6 @@ impl UpdateOrder {
             ) -> NewStore {
                 let created_at = Local::now().to_string();
                 let update_at = Local::now().to_string();
-                let staff_id =  Uuid::new_v5(
-             &Uuid::NAMESPACE_OID,
-             format!("{}-{}-{}",staff_id,store_keeper,store_location).to_string().as_bytes()
-         ).to_string();
                 NewStore {
                     staff_id,
                     store_keeper,
