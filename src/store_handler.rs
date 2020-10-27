@@ -7,13 +7,13 @@ use crate::schema;
 pub fn add_store(con:PgConnection,store:NewStore)-> JsonValue {
     // print!("Product is {:?}",product);
     use schema::market_store;
-    diesel::insert_into(market_store::table)
+    let result = diesel::insert_into(market_store::table)
                                                 .values(store)
-                                                .execute(&con)
+                                                .get_result::<Store>(&con)
                                                 .expect("Error creating new store");
     return json!({
                 "status": true,
-                "data":"Store added successfully"
+                "data":result
             })
 
 }
