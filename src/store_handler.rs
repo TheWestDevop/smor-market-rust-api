@@ -33,7 +33,7 @@ pub fn update_old_store(con:PgConnection,store:UpdateStore) -> JsonValue {
                                                 .expect("Error updating category");
     return json!({
                 "status": true,
-                "data":results
+                "data":results[0]
             })
 }
 pub fn get_avaliable_store(con:PgConnection) -> JsonValue {
